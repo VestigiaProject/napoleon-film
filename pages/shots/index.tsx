@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabaseClient';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
@@ -80,7 +80,7 @@ export default function ShotsPage() {
               key={shot.id}
               className="border-t-2 border-gray-200 py-8"
             >
-              <div className="flex gap-8 items-center min-h-[300px]">
+              <div className="flex flex-col-reverse sm:flex-row gap-8 items-start sm:items-center min-h-[300px]">
                 {/* Text Content */}
                 <div className="flex-1">
                   <div className="uppercase tracking-wider text-sm mb-2">
@@ -101,7 +101,7 @@ export default function ShotsPage() {
                 </div>
 
                 {/* Video Section */}
-                <div className="w-80 flex-shrink-0">
+                <div className="w-full sm:w-80 flex-shrink-0 mb-4 sm:mb-0">
                   <div className="bg-black rounded-none overflow-hidden border-2 border-black">
                     {shot.top_video_url ? (
                       <video

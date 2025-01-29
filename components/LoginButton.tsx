@@ -4,11 +4,15 @@ import { useAuth } from '../lib/AuthContext';
 const LoginButton = () => {
   const { user } = useAuth();
 
-  const handleGoogleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
-    if (error) console.error('Error:', error.message);
+  const handleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google'
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
   };
 
   const handleSignOut = async () => {
@@ -34,7 +38,7 @@ const LoginButton = () => {
 
   return (
     <button
-      onClick={handleGoogleLogin}
+      onClick={handleSignIn}
       className="font-mono text-sm uppercase tracking-wider border-2 border-black px-4 py-2 hover:bg-gray-50 transition-colors"
     >
       Sign In

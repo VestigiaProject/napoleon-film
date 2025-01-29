@@ -211,7 +211,7 @@ export default function ShotDetailPage() {
               </p>
               {user && (
                 <p className="mt-4 text-sm px-6">
-                  Be the first to contribute your interpretation
+                  Be the first to recreate this scene!
                 </p>
               )}
             </div>
@@ -222,7 +222,7 @@ export default function ShotDetailPage() {
                   key={video.id}
                   className="border-t-2 border-gray-200 pt-8"
                 >
-                  <div className="flex gap-8 items-center min-h-[300px]">
+                  <div className="flex flex-col-reverse sm:flex-row gap-8 items-start sm:items-center min-h-[300px]">
                     {/* Video Info */}
                     <div className="flex-1">
                       <div className="uppercase tracking-wider text-sm mb-2">
@@ -233,7 +233,7 @@ export default function ShotDetailPage() {
                       </div>
                       {video.description && (
                         <div className="mb-6">
-                          <div className="uppercase tracking-wider text-sm mb-2">[Director's Notes]</div>
+                          <div className="uppercase tracking-wider text-sm mb-2">[Director&apos;s Notes]</div>
                           <p className="text-gray-600 whitespace-pre-line">
                             {video.description}
                           </p>
@@ -261,7 +261,7 @@ export default function ShotDetailPage() {
                     </div>
 
                     {/* Video Player */}
-                    <div className="w-80 flex-shrink-0">
+                    <div className="w-full sm:w-80 flex-shrink-0 mb-4 sm:mb-0">
                       <div className="bg-black rounded-none overflow-hidden border-2 border-black">
                         <video 
                           src={video.video_url} 

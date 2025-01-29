@@ -13,7 +13,6 @@ const UploadPage: NextPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -36,54 +35,39 @@ const UploadPage: NextPage = () => {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) {
-      setError('Please select a video file');
-      return;
-    }
+    if (!selectedFile) return;
+
+    setUploading(true);
+    setError(null);
 
     try {
-      setUploading(true);
-      setError(null);
+      const { error } = await supabase.storage
+        .from('submissions')
+        .upload(`${id}/${selectedFile.name}`, selectedFile);
 
-      // Generate a unique file path
-      const fileExt = selectedFile.name.split('.').pop();
-      const filePath = `shot-${id}/${user?.id}/${Date.now()}.${fileExt}`;
+      if (error) throw error;
 
-      // Upload to Supabase Storage with progress tracking
-      const { error: uploadError, data } = await supabase.storage
-        .from('videos')
-        .upload(filePath, selectedFile, {
-          onUploadProgress: (event) => {
-            const percent = (event.loaded / event.total) * 100;
-            setProgress(Math.round(percent));
-          },
-        });
+      // Create submission record
+      const { error: submissionError } = await supabase
+        .from('submissions')
+        .insert([
+          {
+            shot_id: id,
+            file_path: `${id}/${selectedFile.name}`,
+            description: description,
+            user_id: user?.id
+          }
+        ]);
 
-      if (uploadError) throw uploadError;
+      if (submissionError) throw submissionError;
 
-      // Get the public URL
-      const { data: publicUrlData, error: urlError } = await supabase.storage
-        .from('videos')
-        .getPublicUrl(filePath);
-
-      if (urlError) throw urlError;
-
-      // Create video record in database
-      const { error: dbError } = await supabase
-        .from('videos')
-        .insert({
-          shot_id: id,
-          user_id: user?.id,
-          video_url: publicUrlData.publicUrl,
-          description: description.trim() || null,
-        });
-
-      if (dbError) throw dbError;
-
-      // Redirect back to shot detail page
+      setDescription('');
+      setSelectedFile(null);
       router.push(`/shots/${id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to upload video');
+    } catch (error) {
+      console.error('Error uploading:', error);
+      setError('Failed to upload. Please try again.');
+    } finally {
       setUploading(false);
     }
   };
@@ -133,11 +117,11 @@ const UploadPage: NextPage = () => {
           {/* Upload Section */}
           <div className="border-2 border-black p-8">
             <div className="text-center">
-              <div className="uppercase tracking-wider text-sm mb-8">[Director's Cut]</div>
+              <div className="uppercase tracking-wider text-sm mb-8">[Director&apos;s Cut]</div>
               
               {/* Description Field */}
               <div className="mb-8">
-                <div className="uppercase tracking-wider text-sm mb-4">[Director's Notes]</div>
+                <div className="uppercase tracking-wider text-sm mb-4">[Director&apos;s Notes]</div>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -167,16 +151,8 @@ const UploadPage: NextPage = () => {
                     }}
                   />
                   {uploading && (
-                    <div className="space-y-2">
-                      <div className="h-2 bg-gray-200 overflow-hidden">
-                        <div 
-                          className="h-full bg-black transition-all duration-300"
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                      <p className="text-sm text-gray-600 uppercase tracking-wider">
-                        [{progress}% uploaded]
-                      </p>
+                    <div className="text-sm text-gray-600 uppercase tracking-wider">
+                      [Uploading...]
                     </div>
                   )}
                   {error && (
@@ -218,6 +194,12 @@ const UploadPage: NextPage = () => {
               {uploading ? '[Uploading...]' : '[Submit Scene]'}
             </button>
           </div>
+
+          <p className="text-gray-600 mb-4">
+            You&apos;re about to upload your recreation of this scene.
+          </p>
+          <p className="text-gray-600 mb-4">
+            Can&apos;t wait to see your interpretation!</p>
         </div>
       </main>
     </div>

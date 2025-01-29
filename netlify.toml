@@ -2,13 +2,14 @@
   command = "npm run build"
   publish = ".next"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-# Environment variable configuration
 [build.environment]
+  NEXT_PUBLIC_SUPABASE_URL = "https://tfgpqwfabowggaumerqi.supabase.co"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZ3Bxd2ZhYm93Z2dhdW1lcnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgwOTg2ODksImV4cCI6MjA1MzY3NDY4OX0.C3bb3iyheuwoDgWeY8AVcOr0Dn_7F26v2-AFN3zG7ls"
   NEXT_USE_NETLIFY_EDGE = "true"
   NODE_VERSION = "18"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Redirect all unmatched routes to index page
 [[redirects]]

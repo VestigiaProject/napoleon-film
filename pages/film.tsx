@@ -100,7 +100,7 @@ const Film: NextPage = () => {
         <div className="mb-12 text-center">
           <div className="uppercase tracking-wider text-sm mb-4">Full Film</div>
           <h1 className="text-2xl uppercase tracking-wide mb-2">Napoleon</h1>
-          <div className="text-gray-600">Watch the community's highest voted interpretations of each scene in sequence.</div>
+          <div className="text-gray-600">Watch the community&apos;s highest voted interpretations of each scene in sequence.</div>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -210,6 +210,10 @@ const Film: NextPage = () => {
                 [View All Submissions For This Scene Or Submit Your Own]
               </Link>
             </div>
+
+            <p className="text-gray-600 mb-4">
+              Let&apos;s recreate this scene together!
+            </p>
           </div>
         </div>
       </main>

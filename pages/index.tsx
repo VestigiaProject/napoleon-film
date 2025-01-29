@@ -35,7 +35,7 @@ export default function Home() {
             {/* Script Header */}
             <div className="text-center border-b-2 border-gray-500 pb-8 mb-8">
               <div className="uppercase text-sm tracking-widest mb-4">FADE IN:</div>
-              <h1 className="text-4xl font-bold tracking-tight uppercase mb-4">
+              <h1 className="text-4xl font-bold mb-4">
                 NAPOLEON
               </h1>
               <div className="text-sm uppercase tracking-widest">
@@ -48,7 +48,7 @@ export default function Home() {
               <div className="mb-8">
                 <div className="uppercase text-sm tracking-widest mb-2">SCENE 1</div>
                 <p className="text-lg leading-relaxed">
-                  A tribute to Kubrick's greatest film never made — Napoleon.
+                  A tribute to Kubrick&apos;s greatest film never made — Napoleon.
                   <br />
                   A collaborative film project using generative AI.
                 </p>

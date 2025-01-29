@@ -13,10 +13,9 @@ const AboutPage: NextPage = () => {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="uppercase tracking-wider text-sm mb-4">About</div>
-            <h1 className="text-2xl uppercase tracking-wide mb-4">
-              The Napoleon Project
-            </h1>
+            <div className="uppercase tracking-wider text-sm mb-4">[About]</div>
+            <h1 className="text-2xl uppercase tracking-wide mb-2">Napoleon Film Project</h1>
+            <div className="text-gray-600">A community-driven film recreation project</div>
           </div>
 
           {/* Content Sections */}
@@ -25,7 +24,7 @@ const AboutPage: NextPage = () => {
               <div className="uppercase tracking-wider text-sm mb-4">[The Concept]</div>
               <p className="text-gray-600 mb-6">
                 The Napoleon Project is a community-driven film experiment where filmmakers from around 
-                the world collaborate to create a unique interpretation of Napoleon's life story, as a tribute to Stanley Kubrick's never made Napoleon film. Each 
+                the world collaborate to create a unique interpretation of Napoleon&apos;s life story, as a tribute to Stanley Kubrick&apos;s never made Napoleon film. Each 
                 scene is open for multiple interpretations made by contributors with generative AI video models, with the community voting on their favorite 
                 versions.
               </p>
@@ -52,7 +51,7 @@ const AboutPage: NextPage = () => {
             <section>
               <div className="uppercase tracking-wider text-sm mb-4">[Join The Project]</div>
               <p className="text-gray-600 mb-6">
-                Whether you're a filmmaker, history enthusiast, or just curious, there are many ways 
+                Whether you&apos;re a filmmaker, history enthusiast, or just curious, there are many ways 
                 to participate:
               </p>
               <ul className="list-none space-y-4 text-gray-600">
@@ -66,7 +65,7 @@ const AboutPage: NextPage = () => {
             <section>
               <div className="uppercase tracking-wider text-sm mb-4">[Disclaimer]</div>
               <p className="text-gray-600 mb-6">
-                This project is a non-commercial, experimental tribute born from our admiration for Stanley Kubrick's 
+                This project is a non-commercial, experimental tribute born from our admiration for Stanley Kubrick&apos;s 
                 work and historical storytelling. It is an open creative exploration, completely independent and 
                 unaffiliated with any rights holders or commercial entities. We receive no funding and generate 
                 no revenue. The final film will remain strictly non-commercial and will never be distributed for profit. 

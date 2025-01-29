@@ -22,6 +22,7 @@ User-submitted videos for each shot.
 | shot_id    | bigint      | Reference to the shot this video belongs to    | FK → shots.id |
 | video_url  | text        | URL to the video in storage                    | not null |
 | user_id    | uuid        | Reference to the user who uploaded the video   | FK → auth.users.id |
+| description| text        | Description of the video                       | not null |
 | created_at | timestamptz | When the video was uploaded                    | not null, default now() |
 
 ### `votes`

@@ -22,6 +22,7 @@ type Video = {
   created_at: string;
   votes_count: number;
   has_voted?: boolean;
+  description: string | null;
 };
 
 export default function ShotDetailPage() {
@@ -34,67 +35,56 @@ export default function ShotDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchVideosWithVotes = async (shotId: string | number) => {
-    console.log('Fetching videos for shot:', shotId);
+  // Ensure id is string before using in hrefs
+  const shotId = typeof id === 'string' ? id : '';
+
+  const fetchVideosWithVotes = async (shotId: string) => {
     try {
-      const numericShotId = Number(shotId);
+      const numericShotId = parseInt(shotId, 10);
       if (isNaN(numericShotId)) {
         throw new Error('Invalid shot ID');
       }
 
       const { data, error } = await supabase
         .rpc('get_videos_with_votes', { 
-          shot_id_input: numericShotId 
+          shot_id_input: numericShotId,
         });
       
-      if (error) {
-        console.error('Error details:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint
-        });
-        throw error;
-      }
-
+      if (error) throw error;
       return data || [];
     } catch (err) {
-      console.error('Error in fetchVideosWithVotes:', err);
-      throw err;
+      console.error('Error fetching videos:', err);
+      return [];
     }
   };
 
   useEffect(() => {
-    if (!id) return;
-
     const fetchData = async () => {
+      if (!shotId) return;
+      
       try {
-        console.log('Fetching shot with ID:', id);
-        
-        // Fetch shot details
         const { data: shotData, error: shotError } = await supabase
           .from('shots')
           .select('*')
-          .eq('id', id)
+          .eq('id', shotId)
           .single();
 
         if (shotError) throw shotError;
-        if (!shotData) throw new Error(`Shot not found with ID: ${id}`);
+        if (!shotData) throw new Error('Shot not found');
 
         setShot(shotData);
-
-        // Fetch videos with vote counts
-        const videosData = await fetchVideosWithVotes(id);
+        const videosData = await fetchVideosWithVotes(shotId);
         setVideos(videosData);
       } catch (err) {
-        console.error('Error in fetchData:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch shot data');
+        console.error('Error fetching shot:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch shot');
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [id]);
+  }, [shotId]);
 
   const handleVote = async (videoId: number) => {
     if (!user) {
@@ -142,12 +132,12 @@ export default function ShotDetailPage() {
       if (mutationError) throw mutationError;
 
       // Refresh videos to get the accurate count
-      const updatedVideos = await fetchVideosWithVotes(id);
+      const updatedVideos = await fetchVideosWithVotes(shotId);
       setVideos(updatedVideos);
     } catch (err) {
       console.error('Error voting:', err);
       // Revert the optimistic update on error
-      const updatedVideos = await fetchVideosWithVotes(id);
+      const updatedVideos = await fetchVideosWithVotes(shotId);
       setVideos(updatedVideos);
       alert('Failed to register vote. Please try again.');
     }
@@ -155,10 +145,10 @@ export default function ShotDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center font-mono">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading shot details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Scene...]</p>
         </div>
       </div>
     );
@@ -166,91 +156,119 @@ export default function ShotDetailPage() {
 
   if (error || !shot) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 text-red-600 max-w-2xl mx-auto">
-          {error || 'Shot not found'}
+      <div className="min-h-screen bg-white p-8 font-mono">
+        <div className="border-2 border-black p-4 max-w-2xl mx-auto">
+          <div className="uppercase tracking-wider text-sm mb-2">[ERROR]</div>
+          <div className="text-gray-800">{error || 'Scene not found'}</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white font-mono">
       <Head>
-        <title>{shot.title} - Napoleon Film Project</title>
-        <meta name="description" content={`Shot ${shot.order_index}: ${shot.title}`} />
+        <title>Napoleon - Scene {shot.order_index}</title>
+        <meta name="description" content={`Scene ${shot.order_index}: ${shot.title}`} />
       </Head>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8 flex justify-between items-center">
-          <Link 
-            href="/shots"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+        {/* Scene Header */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <div className="border-b-2 border-gray-200 pb-8">
+            <div className="text-center mb-8">
+              <div className="uppercase tracking-wider text-sm mb-4">Scene {shot.order_index}</div>
+              <h1 className="text-2xl uppercase tracking-wide">
+                {shot.title}
+              </h1>
+            </div>
+            <p className="text-gray-600 whitespace-pre-line">
+              {shot.script_excerpt}
+            </p>
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="max-w-4xl mx-auto mb-12 text-center">
+          <Link
+            href={`/shots/${shotId}/upload`}
+            className="inline-block px-8 py-4 bg-black text-white font-mono uppercase tracking-wider text-sm hover:bg-gray-900 transition-colors border-2 border-black"
           >
-            ← Back to Shots
+            [Submit Your Version]
           </Link>
-          <span className="text-sm text-gray-500">
-            Shot #{shot.order_index}
-          </span>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{shot.title}</h1>
-          <p className="text-gray-600 whitespace-pre-line text-lg">
-            {shot.script_excerpt}
-          </p>
-        </div>
+        {/* Community Submissions */}
+        <div className="max-w-4xl mx-auto">
+          <div className="uppercase tracking-wider text-sm mb-8 text-center">
+            [Community Interpretations]
+          </div>
 
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Community Videos</h2>
           {videos.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-              <p className="text-gray-500">No videos uploaded yet for this shot.</p>
+            <div className="py-12 border-2 border-black">
+              <p className="text-gray-600 uppercase tracking-wider text-sm px-6">
+                [No Videos Uploaded Yet]
+              </p>
               {user && (
-                <p className="mt-4 text-blue-600">
-                  Be the first to contribute a video!
+                <p className="mt-4 text-sm px-6">
+                  Be the first to contribute your interpretation
                 </p>
               )}
             </div>
           ) : (
-            <div className="grid gap-6">
+            <div className="space-y-12">
               {videos.map((video) => (
                 <div 
                   key={video.id}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden"
+                  className="border-t-2 border-gray-200 pt-8"
                 >
-                  <div className="aspect-w-16 aspect-h-9">
-                    <video 
-                      src={video.video_url} 
-                      controls 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div className="flex flex-col">
-                        <span className="text-sm text-gray-500">
-                          Uploaded by: {video.user_email || 'Anonymous'}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          {new Date(video.created_at).toLocaleDateString()}
-                        </span>
+                  <div className="flex gap-8 items-center min-h-[300px]">
+                    {/* Video Info */}
+                    <div className="flex-1">
+                      <div className="uppercase tracking-wider text-sm mb-2">
+                        Director: {video.user_email || 'Anonymous'}
                       </div>
-                      <button
-                        onClick={() => handleVote(video.id)}
-                        className={`flex items-center space-x-1 px-3 py-1 rounded transition-colors duration-200 ${
-                          user 
-                            ? video.has_voted
-                              ? 'bg-blue-100 hover:bg-blue-200 text-blue-600'
-                              : 'hover:bg-gray-100'
-                            : 'opacity-50 cursor-not-allowed'
-                        }`}
-                        disabled={!user}
-                        title={user ? (video.has_voted ? 'Remove vote' : 'Add vote') : 'Sign in to vote'}
-                      >
-                        <span>{video.has_voted ? '👍' : '👆'}</span>
-                        <span>{video.votes_count || 0}</span>
-                      </button>
+                      <div className="text-sm text-gray-600 mb-4">
+                        {new Date(video.created_at).toLocaleDateString()}
+                      </div>
+                      {video.description && (
+                        <div className="mb-6">
+                          <div className="uppercase tracking-wider text-sm mb-2">[Director's Notes]</div>
+                          <p className="text-gray-600 whitespace-pre-line">
+                            {video.description}
+                          </p>
+                        </div>
+                      )}
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={() => handleVote(video.id)}
+                          className={`text-sm uppercase tracking-wider border-2 px-4 py-2 ${
+                            !user 
+                              ? 'border-gray-200 text-gray-400 cursor-not-allowed' 
+                              : video.has_voted
+                                ? 'border-black bg-black text-white'
+                                : 'border-black text-black hover:bg-gray-50'
+                          }`}
+                          disabled={!user}
+                          title={user ? (video.has_voted ? 'Remove upvote' : 'Upvote this interpretation') : 'Sign in to upvote'}
+                        >
+                          {video.has_voted ? '[Remove Upvote]' : '[Upvote]'}
+                        </button>
+                        <div className="text-sm text-gray-600 uppercase tracking-wider">
+                          {video.votes_count || 0} {video.votes_count === 1 ? 'upvote' : 'upvotes'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Video Player */}
+                    <div className="w-80 flex-shrink-0">
+                      <div className="bg-black rounded-none overflow-hidden border-2 border-black">
+                        <video 
+                          src={video.video_url} 
+                          controls 
+                          className="w-full aspect-video"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -258,18 +276,6 @@ export default function ShotDetailPage() {
             </div>
           )}
         </div>
-
-        {user && (
-          <div className="fixed bottom-8 right-8">
-            <Link
-              href={`/shots/${id}/upload`}
-              className="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2"
-            >
-              <span>Upload Video</span>
-              <span>+</span>
-            </Link>
-          </div>
-        )}
       </main>
     </div>
   );

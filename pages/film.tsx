@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import Head from 'next/head';
+import type { NextPage } from 'next';
 import Link from 'next/link';
 
 type ShotWithVideo = {
@@ -15,7 +16,7 @@ type ShotWithVideo = {
   top_video_votes: number | null;
 };
 
-export default function Film() {
+const Film: NextPage = () => {
   const [shots, setShots] = useState<ShotWithVideo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -64,24 +65,12 @@ export default function Film() {
     }
   };
 
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentIndex < shots.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center font-mono">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading film...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Scene...]</p>
         </div>
       </div>
     );
@@ -89,9 +78,10 @@ export default function Film() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 text-red-600 max-w-2xl mx-auto">
-          {error}
+      <div className="min-h-screen bg-white p-8 font-mono">
+        <div className="border-2 border-black p-4 max-w-2xl mx-auto">
+          <div className="uppercase tracking-wider text-sm mb-2">[ERROR]</div>
+          <div className="text-gray-800">{error}</div>
         </div>
       </div>
     );
@@ -100,39 +90,41 @@ export default function Film() {
   const currentShot = shots[currentIndex];
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-white font-mono">
       <Head>
-        <title>Watch Napoleon - Community Film Project</title>
-        <meta name="description" content="Watch the community-created Napoleon film" />
+        <title>Napoleon - Scene {currentIndex + 1}</title>
+        <meta name="description" content="Napoleon Film Project" />
       </Head>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8 flex justify-between items-center">
-          <Link 
-            href="/"
-            className="text-gray-400 hover:text-white font-medium"
-          >
-            ← Back to Home
-          </Link>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setAutoplay(!autoplay)}
-              className={`px-4 py-2 rounded ${
-                autoplay 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-700 text-gray-300'
-              }`}
-            >
-              {autoplay ? 'Disable' : 'Enable'} Autoplay
-            </button>
-            <span className="text-gray-400">
-              Shot {currentIndex + 1} of {shots.length}
-            </span>
-          </div>
+        <div className="mb-12 text-center">
+          <div className="uppercase tracking-wider text-sm mb-4">Full Film</div>
+          <h1 className="text-2xl uppercase tracking-wide mb-2">Napoleon</h1>
+          <div className="text-gray-600">Watch the community's highest voted interpretations of each scene in sequence.</div>
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="bg-black rounded-lg overflow-hidden shadow-2xl">
+          {/* Autoplay Control */}
+          <div className="mb-4 flex justify-end">
+            <div className="w-80 flex items-center justify-between">
+              <button
+                onClick={() => setAutoplay(!autoplay)}
+                className={`px-4 py-2 text-sm uppercase tracking-wider border-2 ${
+                  autoplay 
+                    ? 'border-black bg-black text-white' 
+                    : 'border-black text-black hover:bg-gray-50'
+                }`}
+              >
+                {autoplay ? '[Stop Autoplay]' : '[Start Autoplay]'}
+              </button>
+              <span className="text-sm uppercase tracking-wider">
+                Scene {currentIndex + 1} of {shots.length}
+              </span>
+            </div>
+          </div>
+
+          {/* Video Player */}
+          <div className="bg-black rounded-none overflow-hidden border-2 border-black">
             {currentShot.top_video_url ? (
               <video
                 ref={videoRef}
@@ -142,53 +134,87 @@ export default function Film() {
                 onEnded={handleVideoEnd}
               />
             ) : (
-              <div className="aspect-video bg-gray-800 flex items-center justify-center">
-                <p className="text-gray-400">No video available for this shot</p>
+              <div className="aspect-video bg-gray-100 flex items-center justify-center">
+                <p className="text-gray-600 uppercase tracking-wider text-sm">[No Video Uploaded Yet]</p>
               </div>
             )}
           </div>
 
-          <div className="mt-6 bg-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-white mb-2">
-              {currentShot.title}
-            </h2>
-            <p className="text-gray-300 whitespace-pre-line">
-              {currentShot.script_excerpt}
-            </p>
-            {currentShot.top_video_user_id && (
-              <p className="mt-4 text-sm text-gray-400">
-                Top video by: {currentShot.top_video_user_email || 'Anonymous'} 
-                {currentShot.top_video_votes ? ` (${currentShot.top_video_votes} votes)` : ' (0 votes)'}
-              </p>
-            )}
+          {/* Scene Navigation */}
+          <div className="mt-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+                  className="px-4 py-2 text-sm uppercase tracking-wider border-2 border-black text-black hover:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-white"
+                  disabled={currentIndex === 0}
+                >
+                  [Previous]
+                </button>
+                <button
+                  onClick={() => setCurrentIndex(Math.min(shots.length - 1, currentIndex + 1))}
+                  className="px-4 py-2 text-sm uppercase tracking-wider border-2 border-black text-black hover:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-white"
+                  disabled={currentIndex === shots.length - 1}
+                >
+                  [Next]
+                </button>
+              </div>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm uppercase tracking-wider">Go to Scene:</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={shots.length}
+                  value={currentIndex + 1}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    if (!isNaN(value) && value >= 1 && value <= shots.length) {
+                      setCurrentIndex(value - 1);
+                    }
+                  }}
+                  className="w-16 px-2 py-1 text-sm border-2 border-black font-mono text-center"
+                />
+                <span className="text-sm text-gray-600 uppercase tracking-wider">
+                  of {shots.length}
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6 flex justify-between items-center">
-            <button
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-              className={`px-6 py-3 rounded-lg ${
-                currentIndex === 0
-                  ? 'bg-gray-800 text-gray-600 cursor-not-allowed'
-                  : 'bg-gray-700 text-white hover:bg-gray-600'
-              }`}
-            >
-              ← Previous Shot
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={currentIndex === shots.length - 1}
-              className={`px-6 py-3 rounded-lg ${
-                currentIndex === shots.length - 1
-                  ? 'bg-gray-800 text-gray-600 cursor-not-allowed'
-                  : 'bg-gray-700 text-white hover:bg-gray-600'
-              }`}
-            >
-              Next Shot →
-            </button>
+          {/* Scene Description */}
+          <div className="mt-8 border-t-2 border-gray-200 py-8">
+            <div className="uppercase tracking-wider text-sm mb-2">Scene Description:</div>
+            <h2 className="text-xl uppercase tracking-wide mb-4">
+              {currentShot.title}
+            </h2>
+            <div className="whitespace-pre-line text-gray-800 mb-6">
+              {currentShot.script_excerpt}
+            </div>
+            {currentShot.top_video_user_id && (
+              <div className="text-sm text-gray-600 uppercase tracking-wider">
+                Director: {currentShot.top_video_user_email || 'Anonymous'} 
+                {currentShot.top_video_votes !== null && (
+                  <span className="ml-2">
+                    [{currentShot.top_video_votes} votes]
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* View Shot Details Button */}
+            <div className="mt-8 text-center">
+              <Link
+                href={`/shots/${currentShot.id}`}
+                className="inline-block px-8 py-3 text-sm uppercase tracking-wider border-2 border-black text-black hover:bg-gray-50"
+              >
+                [View All Submissions For This Scene Or Submit Your Own]
+              </Link>
+            </div>
           </div>
         </div>
       </main>
     </div>
   );
-} 
+};
+
+export default Film; 

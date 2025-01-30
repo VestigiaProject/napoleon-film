@@ -262,7 +262,12 @@ export default function ShotDetailPage() {
         <div className="max-w-4xl mx-auto mb-12">
           <div className="border-b-2 border-gray-200 pb-8">
             <div className="text-center mb-8">
-              <div className="uppercase tracking-wider text-sm mb-4">Shot {shot.order_index}</div>
+              <div className="uppercase tracking-wider text-sm mb-4">
+                Shot {shot.order_index}
+                <span className="text-xs text-gray-300 ml-2 font-light tracking-normal lowercase">
+                  (id: {shot.id})
+                </span>
+              </div>
               <h1 className="text-2xl uppercase tracking-wide">
                 {shot.title}
               </h1>

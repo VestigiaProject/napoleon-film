@@ -85,6 +85,9 @@ export default function ShotsPage() {
                 <div className="flex-1">
                   <div className="uppercase tracking-wider text-sm mb-2">
                     Shot {index + 1}
+                    <span className="text-xs text-gray-300 ml-2 font-light tracking-normal lowercase">
+                      (id: {shot.id})
+                    </span>
                   </div>
                   <h2 className="text-xl uppercase tracking-wide mb-4">
                     {shot.title}

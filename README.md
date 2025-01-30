@@ -2,6 +2,10 @@
 
 A community-driven film project to adapt a movie script, broken down by shots. Users can contribute AI-generated videos for each shot, vote on their favorites, and watch the entire film in sequence.
 
+## Join Our Community
+
+Join our Discord server to discuss the project, share ideas, and get help: [https://discord.gg/FeJz9gtXF4](https://discord.gg/FeJz9gtXF4)
+
 ## Features
 
 - View an entire script broken down by shots

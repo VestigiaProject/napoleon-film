@@ -34,6 +34,8 @@ export default function ShotDetailPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingVideoId, setEditingVideoId] = useState<number | null>(null);
+  const [editedDescription, setEditedDescription] = useState<string>('');
 
   // Ensure id is string before using in hrefs
   const shotId = typeof id === 'string' ? id : '';
@@ -143,6 +145,89 @@ export default function ShotDetailPage() {
     }
   };
 
+  const handleDelete = async (video: Video) => {
+    if (!user || user.id !== video.user_id) {
+      alert('You can only delete your own videos');
+      return;
+    }
+
+    if (!confirm('Are you sure you want to delete this video? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      // Delete the video record from the database
+      const { error: dbError } = await supabase
+        .from('videos')
+        .delete()
+        .eq('id', video.id)
+        .eq('user_id', user.id);
+
+      if (dbError) throw dbError;
+
+      // Extract the file path from the video URL
+      const urlParts = video.video_url.split('/');
+      const filePath = urlParts[urlParts.length - 1];
+
+      // Delete the file from storage
+      const { error: storageError } = await supabase.storage
+        .from('videos')
+        .remove([`shot-${video.shot_id}/${video.user_id}/${filePath}`]);
+
+      if (storageError) {
+        console.error('Error deleting from storage:', storageError);
+        // Don't throw here as the database record is already deleted
+      }
+
+      // Update the videos list
+      const updatedVideos = await fetchVideosWithVotes(shotId);
+      setVideos(updatedVideos);
+    } catch (err) {
+      console.error('Error deleting video:', err);
+      alert('Failed to delete video. Please try again.');
+    }
+  };
+
+  const handleEdit = async (video: Video) => {
+    if (!user || user.id !== video.user_id) {
+      alert('You can only edit your own videos');
+      return;
+    }
+
+    setEditingVideoId(video.id);
+    setEditedDescription(video.description || '');
+  };
+
+  const handleSaveEdit = async (video: Video) => {
+    if (!user || user.id !== video.user_id) {
+      alert('You can only edit your own videos');
+      return;
+    }
+
+    try {
+      const { error: updateError } = await supabase
+        .from('videos')
+        .update({ description: editedDescription.trim() || null })
+        .eq('id', video.id)
+        .eq('user_id', user.id);
+
+      if (updateError) throw updateError;
+
+      // Update the videos list
+      const updatedVideos = await fetchVideosWithVotes(shotId);
+      setVideos(updatedVideos);
+      setEditingVideoId(null);
+    } catch (err) {
+      console.error('Error updating video:', err);
+      alert('Failed to update video description. Please try again.');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingVideoId(null);
+    setEditedDescription('');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center font-mono">
@@ -231,12 +316,37 @@ export default function ShotDetailPage() {
                       <div className="text-sm text-gray-600 mb-4">
                         {new Date(video.created_at).toLocaleDateString()}
                       </div>
-                      {video.description && (
+                      {video.description && editingVideoId !== video.id && (
                         <div className="mb-6">
                           <div className="uppercase tracking-wider text-sm mb-2">[Director&apos;s Notes]</div>
                           <p className="text-gray-600 whitespace-pre-line">
                             {video.description}
                           </p>
+                        </div>
+                      )}
+                      {editingVideoId === video.id && (
+                        <div className="mb-6">
+                          <div className="uppercase tracking-wider text-sm mb-2">[Edit Director&apos;s Notes]</div>
+                          <textarea
+                            value={editedDescription}
+                            onChange={(e) => setEditedDescription(e.target.value)}
+                            placeholder="Share your thoughts about your interpretation..."
+                            className="w-full h-32 p-4 border-2 border-black font-mono text-sm resize-none focus:outline-none mb-4"
+                          />
+                          <div className="flex space-x-4">
+                            <button
+                              onClick={() => handleSaveEdit(video)}
+                              className="text-sm uppercase tracking-wider border-2 border-black bg-black text-white px-4 py-2 hover:bg-gray-900"
+                            >
+                              [Save]
+                            </button>
+                            <button
+                              onClick={handleCancelEdit}
+                              className="text-sm uppercase tracking-wider border-2 border-black text-black px-4 py-2 hover:bg-gray-50"
+                            >
+                              [Cancel]
+                            </button>
+                          </div>
                         </div>
                       )}
                       <div className="flex items-center space-x-4">
@@ -257,6 +367,25 @@ export default function ShotDetailPage() {
                         <div className="text-sm text-gray-600 uppercase tracking-wider">
                           {video.votes_count || 0} {video.votes_count === 1 ? 'upvote' : 'upvotes'}
                         </div>
+                        {user && user.id === video.user_id && (
+                          <>
+                            <button
+                              onClick={() => handleEdit(video)}
+                              className="text-sm uppercase tracking-wider border-2 border-black text-black px-4 py-2 hover:bg-gray-50"
+                              title="Edit your video description"
+                              disabled={editingVideoId === video.id}
+                            >
+                              [Edit]
+                            </button>
+                            <button
+                              onClick={() => handleDelete(video)}
+                              className="text-sm uppercase tracking-wider border-2 border-red-500 text-red-500 px-4 py-2 hover:bg-red-50"
+                              title="Delete your video"
+                            >
+                              [Delete]
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
 

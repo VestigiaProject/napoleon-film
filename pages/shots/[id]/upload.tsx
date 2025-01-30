@@ -18,9 +18,9 @@ const UploadPage: NextPage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileSelect = (file: File) => {
-    // Validate file size (100MB limit)
+    // Validate file size (50MB limit)
     if (file.size > 100 * 1024 * 1024) {
-      setError('File size must be less than 100MB');
+      setError('File size must be less than 50MB');
       return;
     }
 
@@ -41,25 +41,39 @@ const UploadPage: NextPage = () => {
     setError(null);
 
     try {
-      const { error } = await supabase.storage
-        .from('submissions')
-        .upload(`${id}/${selectedFile.name}`, selectedFile);
+      if (!user) {
+        throw new Error('User must be logged in to upload');
+      }
 
-      if (error) throw error;
+      console.log('Current user:', user); // Debug user object
 
-      // Create submission record
-      const { error: submissionError } = await supabase
-        .from('submissions')
-        .insert([
-          {
-            shot_id: id,
-            file_path: `${id}/${selectedFile.name}`,
-            description: description,
-            user_id: user?.id
-          }
-        ]);
+      // Generate a unique file path
+      const fileExt = selectedFile.name.split('.').pop();
+      const filePath = `shot-${id}/${user?.id}/${Date.now()}.${fileExt}`;
 
-      if (submissionError) throw submissionError;
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('videos')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) throw uploadError;
+
+      // Get the public URL
+      const { data } = supabase.storage
+        .from('videos')
+        .getPublicUrl(filePath);
+
+      // Create video record in database
+      const { error: dbError } = await supabase
+        .from('videos')
+        .insert({
+          shot_id: id,
+          user_id: user?.id,
+          video_url: data.publicUrl,
+          description: description.trim() || null,
+        });
+
+      if (dbError) throw dbError;
 
       setDescription('');
       setSelectedFile(null);
@@ -82,7 +96,7 @@ const UploadPage: NextPage = () => {
             href={`/shots/${id}`}
             className="inline-block mt-4 px-6 py-3 text-sm uppercase tracking-wider border-2 border-black hover:bg-gray-50"
           >
-            [Back to Scene]
+            [Back to Shot]
           </Link>
         </div>
       </div>
@@ -92,8 +106,8 @@ const UploadPage: NextPage = () => {
   return (
     <div className="min-h-screen bg-white font-mono">
       <Head>
-        <title>Submit Your Scene - Napoleon Film Project</title>
-        <meta name="description" content="Upload your interpretation of the scene" />
+        <title>Submit Your Shot - Napoleon Film Project</title>
+        <meta name="description" content="Upload your interpretation of the shot" />
       </Head>
 
       <main className="container mx-auto px-4 py-8">
@@ -104,10 +118,10 @@ const UploadPage: NextPage = () => {
               href={`/shots/${id}`}
               className="text-sm uppercase tracking-wider text-gray-600 hover:text-black"
             >
-              [← Back to Scene]
+              [← Back to Shot]
             </Link>
             <div className="mt-8">
-              <div className="uppercase tracking-wider text-sm mb-4">Scene Submission</div>
+              <div className="uppercase tracking-wider text-sm mb-4">Shot Submission</div>
               <h1 className="text-2xl uppercase tracking-wide mb-4">
                 Your Interpretation
               </h1>
@@ -166,7 +180,7 @@ const UploadPage: NextPage = () => {
               <div className="mt-8 space-y-4 text-sm text-gray-600">
                 <div className="uppercase tracking-wider">[Requirements]</div>
                 <div className="space-y-2">
-                  <p>• Maximum file size: 100MB</p>
+                  <p>• Maximum file size: 50MB</p>
                   <p>• Supported formats: MP4, WebM, MOV</p>
                   <p>• Recommended resolution: 1080p or higher</p>
                 </div>
@@ -191,12 +205,12 @@ const UploadPage: NextPage = () => {
                   : 'bg-black text-white hover:bg-gray-900'
               }`}
             >
-              {uploading ? '[Uploading...]' : '[Submit Scene]'}
+              {uploading ? '[Uploading...]' : '[Submit Shot]'}
             </button>
           </div>
 
           <p className="text-gray-600 mb-4">
-            You&apos;re about to upload your recreation of this scene.
+            You&apos;re about to upload your recreation of this shot.
           </p>
           <p className="text-gray-600 mb-4">
             Can&apos;t wait to see your interpretation!</p>

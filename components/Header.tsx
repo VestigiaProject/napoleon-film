@@ -40,7 +40,7 @@ export default function Header() {
                   : 'text-gray-600 hover:text-black'
               } font-mono text-sm uppercase tracking-wider`}
             >
-              Scenes
+              Shots
             </Link>
             <Link
               href="/about"
@@ -108,7 +108,7 @@ export default function Header() {
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
-              Scenes
+              Shots
             </Link>
             <Link
               href="/about"

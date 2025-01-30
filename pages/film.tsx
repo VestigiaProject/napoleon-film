@@ -70,7 +70,7 @@ const Film: NextPage = () => {
       <div className="min-h-screen bg-white flex items-center justify-center font-mono">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Scene...]</p>
+          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Shot...]</p>
         </div>
       </div>
     );
@@ -92,7 +92,7 @@ const Film: NextPage = () => {
   return (
     <div className="min-h-screen bg-white font-mono">
       <Head>
-        <title>Napoleon - Scene {currentIndex + 1}</title>
+        <title>Napoleon - Shot {currentIndex + 1}</title>
         <meta name="description" content="Napoleon Film Project" />
       </Head>
 
@@ -100,7 +100,7 @@ const Film: NextPage = () => {
         <div className="mb-12 text-center">
           <div className="uppercase tracking-wider text-sm mb-4">Full Film</div>
           <h1 className="text-2xl uppercase tracking-wide mb-2">Napoleon</h1>
-          <div className="text-gray-600">Watch the community&apos;s highest voted interpretations of each scene in sequence.</div>
+          <div className="text-gray-600">Watch the community&apos;s highest voted interpretations of each shot in sequence.</div>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -118,7 +118,7 @@ const Film: NextPage = () => {
                 {autoplay ? '[Stop Autoplay]' : '[Start Autoplay]'}
               </button>
               <span className="text-sm uppercase tracking-wider">
-                Scene {currentIndex + 1} of {shots.length}
+                Shot {currentIndex + 1} of {shots.length}
               </span>
             </div>
           </div>
@@ -140,7 +140,7 @@ const Film: NextPage = () => {
             )}
           </div>
 
-          {/* Scene Navigation */}
+          {/* Shot Navigation */}
           <div className="mt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -160,7 +160,7 @@ const Film: NextPage = () => {
                 </button>
               </div>
               <div className="flex items-center space-x-4">
-                <span className="text-sm uppercase tracking-wider">Go to Scene:</span>
+                <span className="text-sm uppercase tracking-wider">Go to Shot:</span>
                 <input
                   type="number"
                   min={1}
@@ -181,9 +181,9 @@ const Film: NextPage = () => {
             </div>
           </div>
 
-          {/* Scene Description */}
+          {/* Shot Description */}
           <div className="mt-8 border-t-2 border-gray-200 py-8">
-            <div className="uppercase tracking-wider text-sm mb-2">Scene Description:</div>
+            <div className="uppercase tracking-wider text-sm mb-2">Shot Description:</div>
             <h2 className="text-xl uppercase tracking-wide mb-4">
               {currentShot.title}
             </h2>
@@ -207,12 +207,12 @@ const Film: NextPage = () => {
                 href={`/shots/${currentShot.id}`}
                 className="inline-block px-8 py-3 text-sm uppercase tracking-wider border-2 border-black text-black hover:bg-gray-50"
               >
-                [View All Submissions For This Scene Or Submit Your Own]
+                [View All Submissions For This Shot Or Submit Your Own]
               </Link>
             </div>
 
             <p className="text-gray-600 mb-4">
-              Let&apos;s recreate this scene together!
+              Let&apos;s recreate this shot together!
             </p>
           </div>
         </div>

@@ -148,7 +148,7 @@ export default function ShotDetailPage() {
       <div className="min-h-screen bg-white flex items-center justify-center font-mono">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Scene...]</p>
+          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Shot...]</p>
         </div>
       </div>
     );
@@ -159,7 +159,7 @@ export default function ShotDetailPage() {
       <div className="min-h-screen bg-white p-8 font-mono">
         <div className="border-2 border-black p-4 max-w-2xl mx-auto">
           <div className="uppercase tracking-wider text-sm mb-2">[ERROR]</div>
-          <div className="text-gray-800">{error || 'Scene not found'}</div>
+          <div className="text-gray-800">{error || 'Shot not found'}</div>
         </div>
       </div>
     );
@@ -168,16 +168,16 @@ export default function ShotDetailPage() {
   return (
     <div className="min-h-screen bg-white font-mono">
       <Head>
-        <title>Napoleon - Scene {shot.order_index}</title>
-        <meta name="description" content={`Scene ${shot.order_index}: ${shot.title}`} />
+        <title>Napoleon - Shot {shot.order_index}</title>
+        <meta name="description" content={`Shot ${shot.order_index}: ${shot.title}`} />
       </Head>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Scene Header */}
+        {/* Shot Header */}
         <div className="max-w-4xl mx-auto mb-12">
           <div className="border-b-2 border-gray-200 pb-8">
             <div className="text-center mb-8">
-              <div className="uppercase tracking-wider text-sm mb-4">Scene {shot.order_index}</div>
+              <div className="uppercase tracking-wider text-sm mb-4">Shot {shot.order_index}</div>
               <h1 className="text-2xl uppercase tracking-wide">
                 {shot.title}
               </h1>
@@ -211,7 +211,7 @@ export default function ShotDetailPage() {
               </p>
               {user && (
                 <p className="mt-4 text-sm px-6">
-                  Be the first to recreate this scene!
+                  Be the first to recreate this shot!
                 </p>
               )}
             </div>

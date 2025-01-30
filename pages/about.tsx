@@ -25,7 +25,7 @@ const AboutPage: NextPage = () => {
               <p className="text-gray-600 mb-6">
                 The Napoleon Project is a community-driven film experiment where filmmakers from around 
                 the world collaborate to create a unique interpretation of Napoleon&apos;s life story, as a tribute to Stanley Kubrick&apos;s never made Napoleon film. Each 
-                scene is open for multiple interpretations made by contributors with generative AI video models, with the community voting on their favorite 
+                shot is open for multiple interpretations made by contributors with generative AI video models, with the community voting on their favorite 
                 versions.
               </p>
             </section>
@@ -34,10 +34,10 @@ const AboutPage: NextPage = () => {
               <div className="uppercase tracking-wider text-sm mb-4">[How It Works]</div>
               <div className="space-y-4 text-gray-600">
                 <p>
-                  1. Each scene from Napoleon is presented with a script excerpt.
+                  1. Each shot from Napoleon is presented with a script excerpt.
                 </p>
                 <p>
-                  2. Filmmakers can submit their interpretation of any scene.
+                  2. Filmmakers can submit their interpretation of any shot.
                 </p>
                 <p>
                   3. The community votes on their favorite interpretations.
@@ -55,10 +55,10 @@ const AboutPage: NextPage = () => {
                 to participate:
               </p>
               <ul className="list-none space-y-4 text-gray-600">
-                <li>• Submit your own scene interpretation</li>
+                <li>• Submit your own shot interpretation</li>
                 <li>• Vote on community submissions</li>
                 <li>• Share feedback and discuss interpretations</li>
-                <li>• Watch the film evolve as new scenes are added</li>
+                <li>• Watch the film evolve as new shots are added</li>
               </ul>
             </section>
 

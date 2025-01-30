@@ -43,7 +43,7 @@ export default function ShotsPage() {
       <div className="min-h-screen bg-white flex items-center justify-center font-mono">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Scenes...]</p>
+          <p className="mt-4 text-gray-600 uppercase tracking-wider text-sm">[Loading Shots...]</p>
         </div>
       </div>
     );
@@ -63,13 +63,13 @@ export default function ShotsPage() {
   return (
     <div className="min-h-screen bg-white font-mono">
       <Head>
-        <title>Napoleon - All Scenes</title>
+        <title>Napoleon - All Shots</title>
         <meta name="description" content="Complete script breakdown of Napoleon" />
       </Head>
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-12 text-center">
-          <div className="uppercase tracking-wider text-sm mb-4">Scene Breakdown</div>
+          <div className="uppercase tracking-wider text-sm mb-4">Shot Breakdown</div>
           <h1 className="text-2xl uppercase tracking-wide mb-2">Napoleon</h1>
           <div className="text-gray-600">Complete Screenplay</div>
         </div>
@@ -84,7 +84,7 @@ export default function ShotsPage() {
                 {/* Text Content */}
                 <div className="flex-1">
                   <div className="uppercase tracking-wider text-sm mb-2">
-                    Scene {index + 1}
+                    Shot {index + 1}
                   </div>
                   <h2 className="text-xl uppercase tracking-wide mb-4">
                     {shot.title}

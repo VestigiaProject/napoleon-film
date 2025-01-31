@@ -23,7 +23,7 @@ export default function Home() {
           loop
           playsInline
           className="w-full h-full object-cover blur-sm"
-          src="https://tfgpqwfabowggaumerqi.supabase.co/storage/v1/object/sign/assets/background.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvYmFja2dyb3VuZC5tcDQiLCJpYXQiOjE3MzgxNzc1ODUsImV4cCI6MTgwMTI0OTU4NX0.MM8QwhXC0qqmoZRwfuraiSaZS94_bUBYv6OY1tQzw50"
+          src="https://tfgpqwfabowggaumerqi.supabase.co/storage/v1/object/sign/assets/Background2.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvQmFja2dyb3VuZDIubXA0IiwiaWF0IjoxNzM4MzAzMzY2LCJleHAiOjIwNTM2NjMzNjZ9.-Ofm280HRVFsLnjvjZ0kjTbAdqzK-IZQ0B_unhCJeF0"
         />
         <div className="absolute inset-0 bg-black bg-opacity-70" />
       </div>

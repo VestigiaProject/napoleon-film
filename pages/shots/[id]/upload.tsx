@@ -182,7 +182,7 @@ const UploadPage: NextPage = () => {
                 <div className="space-y-2">
                   <p>• Maximum file size: 50MB</p>
                   <p>• Supported formats: MP4, WebM, MOV</p>
-                  <p>• Recommended resolution: 1080p or higher</p>
+                  <p>• Recommended resolution: 1080p, but lower is fine too for now</p>
                 </div>
               </div>
             </div>

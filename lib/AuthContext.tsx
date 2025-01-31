@@ -2,13 +2,19 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 
+type Provider = 'google' | 'discord';
+
 type AuthContextType = {
   user: User | null;
-  signIn: () => Promise<void>;
+  signIn: (provider: Provider) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType>({ user: null, signIn: async () => {}, signOut: async () => {} });
+const AuthContext = createContext<AuthContextType>({ 
+  user: null, 
+  signIn: async () => {}, 
+  signOut: async () => {} 
+});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -30,10 +36,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async () => {
+  const signIn = async (provider: Provider) => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider,
         options: {
           redirectTo: window.location.origin
         }

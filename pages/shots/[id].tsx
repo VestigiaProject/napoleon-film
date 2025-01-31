@@ -354,26 +354,28 @@ export default function ShotDetailPage() {
                           </div>
                         </div>
                       )}
-                      <div className="flex items-center space-x-4">
-                        <button
-                          onClick={() => handleVote(video.id)}
-                          className={`text-sm uppercase tracking-wider border-2 px-4 py-2 ${
-                            !user 
-                              ? 'border-gray-200 text-gray-400 cursor-not-allowed' 
-                              : video.has_voted
-                                ? 'border-black bg-black text-white'
-                                : 'border-black text-black hover:bg-gray-50'
-                          }`}
-                          disabled={!user}
-                          title={user ? (video.has_voted ? 'Remove upvote' : 'Upvote this interpretation') : 'Sign in to upvote'}
-                        >
-                          {video.has_voted ? '[Remove Upvote]' : '[Upvote]'}
-                        </button>
-                        <div className="text-sm text-gray-600 uppercase tracking-wider">
-                          {video.votes_count || 0} {video.votes_count === 1 ? 'upvote' : 'upvotes'}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() => handleVote(video.id)}
+                            className={`text-sm uppercase tracking-wider border-2 px-4 py-2 ${
+                              !user 
+                                ? 'border-gray-200 text-gray-400 cursor-not-allowed' 
+                                : video.has_voted
+                                  ? 'border-black bg-black text-white'
+                                  : 'border-black text-black hover:bg-gray-50'
+                            }`}
+                            disabled={!user}
+                            title={user ? (video.has_voted ? 'Remove upvote' : 'Upvote this interpretation') : 'Sign in to upvote'}
+                          >
+                            {video.has_voted ? '[Remove Upvote]' : '[Upvote]'}
+                          </button>
+                          <div className="text-sm text-gray-600 uppercase tracking-wider">
+                            {video.votes_count || 0} {video.votes_count === 1 ? 'upvote' : 'upvotes'}
+                          </div>
                         </div>
                         {user && user.id === video.user_id && (
-                          <>
+                          <div className="flex items-center space-x-4">
                             <button
                               onClick={() => handleEdit(video)}
                               className="text-sm uppercase tracking-wider border-2 border-black text-black px-4 py-2 hover:bg-gray-50"
@@ -389,7 +391,7 @@ export default function ShotDetailPage() {
                             >
                               [Delete]
                             </button>
-                          </>
+                          </div>
                         )}
                       </div>
                     </div>

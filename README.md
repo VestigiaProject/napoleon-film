@@ -21,7 +21,7 @@ Join our Discord server to discuss the project, share ideas, and get help: [http
 
 1. You can visit the website and browse through the available shots without signing in
 2. To contribute or vote, click the "Sign In" button in the top right corner
-3. Sign in using a Google account
+3. Sign in using a Google or Discord account
 
 ### Viewing Shots
 
